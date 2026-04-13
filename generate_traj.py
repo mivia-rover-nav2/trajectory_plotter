@@ -60,7 +60,7 @@ class TrajectoryGenerator:
         return trajectory
 
 
-    def generate_rectangular_trajectory_smussed(self, bottom_left_point: tuple, width: float, height: float,
+    def generate_rectangular_trajectory_smoothed(self, bottom_left_point: tuple, width: float, height: float,
                                                    corner_radius: float, num_points_per_side: int = 25,
                                                    num_points_per_corner: int = 10) -> list[Waypoint]:
         """Rectangular trajectory with quarter-circle rounded corners.
@@ -73,6 +73,8 @@ class TrajectoryGenerator:
         r = min(corner_radius, width / 2, height / 2)
 
         def _line(x1, y1, x2, y2, heading, n):
+            if x1 == x2 and y1 == y2:
+                return []
             quat = quaternion.from_rotation_vector([0, 0, heading])
             return [
                 Waypoint(
@@ -204,7 +206,7 @@ if __name__ == "__main__":
         radius  = float(input("Corner radius [default 0.3]: ") or "0.3")
         num_pts = int(input("Points per side   [default 25]: ") or "25")
         num_cor = int(input("Points per corner [default 10]: ") or "10")
-        traj = traj_gen.generate_rectangular_trajectory_smussed(
+        traj = traj_gen.generate_rectangular_trajectory_smoothed(
             (bx, by), width=width, height=height,
             corner_radius=radius, num_points_per_side=num_pts, num_points_per_corner=num_cor
         )
